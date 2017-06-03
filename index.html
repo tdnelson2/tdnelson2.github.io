@@ -8,7 +8,7 @@
     <!-- Bootstrap 3 -->
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
     <style type="text/css" media="screen">
         body {
@@ -61,7 +61,7 @@
         // Start playing the video whenever the trailer modal is opened
         $(document).on('click', '.movie-tile', function (event) {
             var trailerYouTubeId = $(this).attr('data-trailer-youtube-id')
-            var sourceUrl = 'http://www.youtube.com/embed/' + trailerYouTubeId + '?autoplay=1&html5=1';
+            var sourceUrl = 'https://www.youtube.com/embed/' + trailerYouTubeId + '?autoplay=1&html5=1';
             $("#trailer-video-container").empty().append($("<iframe></iframe>", {
               'id': 'trailer-video',
               'type': 'text-html',
@@ -147,21 +147,6 @@
 <div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="pIhYlY0xcuM" data-toggle="modal" data-target="#trailer">
     <img src="thumbs/antimatter.jpg" width="220" height="342">
     <h2>Antimatter</h2>
-</div>
-
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="hEJnMQG9ev8" data-toggle="modal" data-target="#trailer">
-    <img src="https://upload.wikimedia.org/wikipedia/en/6/6e/Mad_Max_Fury_Road.jpg" width="220" height="342">
-    <h2>Mad Max: Fury Road</h2>
-</div>
-
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="sGbxmsDFVnE" data-toggle="modal" data-target="#trailer">
-    <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/Star_Wars_The_Force_Awakens_Theatrical_Poster.jpg" width="220" height="342">
-    <h2>Star Wars: The Force Awakens</h2>
-</div>
-
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="7JnC2LIJdR0" data-toggle="modal" data-target="#trailer">
-    <img src="https://upload.wikimedia.org/wikipedia/en/f/fa/Bridge_of_Spies_poster.jpg" width="220" height="342">
-    <h2>Bridge of Spies</h2>
 </div>
 
     </div>
