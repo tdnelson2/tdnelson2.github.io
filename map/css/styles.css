@@ -1,0 +1,147 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #262626;
+}
+
+.container {
+  height: 100%;
+  position: relative;
+}
+
+#map {
+  bottom:0px;
+  height: 100%;
+  left: 300px;
+  position: absolute;
+  right: 0px;
+}
+
+.sidebar {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  /*height: 100%;*/
+  line-height: 35px; 
+  padding-top: 10px;
+  text-align: left;
+  width: 300px;
+  list-style: none;
+}
+
+hr {
+  height: 3px;
+  background: #999999;
+  border: none;
+}
+
+ul {
+  padding-left: 0;
+  margin-left: 0;
+  list-style-type: none;
+  width: 200px;
+}
+
+li a {
+  width: 300px;
+  display: block;
+  text-decoration: none;
+}
+
+li a:hover {
+  color: #ffffff;
+  background-color: #515151;
+}
+
+li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+  text-indent: 20px;
+  line-height: 40px;
+}
+
+form {
+  padding-left: 20px;
+}
+
+.country-select {
+  background: transparent;
+  border: 3px solid #999999;
+  font-size: 14px;
+  height: 29px;
+  width: 250px;
+}
+
+.country-select:focus {
+  outline: 0;
+}
+
+.location-details, .sidebar-brand, li a, .sidebar-close-btn, .hamburger-menu, .country-select {
+  color: #999999;
+}
+
+.location-details, .sidebar-brand {
+  padding-left: 20px;
+  padding-right: 20px; 
+}
+
+.location-title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.description {
+  width: 250px;
+/*  height: 410px;
+  overflow: scroll;*/
+}
+
+.video-thumb {
+  width: 100px;
+  cursor: pointer;
+}
+
+.spacer {
+  margin-right: 5px;
+}
+
+.sidebar-close-btn {
+  top: 10px;
+  left: 260px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.hamburger-menu {
+  width: 80px;
+  height: 75px;
+  top: 10px;
+  left: 10px;
+  position: absolute;
+  background: #262626;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sidebar-close-btn:hover, .hamburger-menu:hover {
+  color: #ffffff;
+}
+
+.hamburger-menu:hover {
+  width: 76px;
+  height: 69px;
+  border: 6px solid #ffffff;
+}
+
+.hamburger-symbol {
+  position: relative;
+  float: left;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.video-thumbs {
+  margin-top: 15px;
+}
