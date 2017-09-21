@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Oswald:200,700" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
   </head>
   <body>
       <div class="sidebar" id="sidebar" data-bind="visible: shouldShowSidebar">
@@ -45,36 +45,7 @@
     <script src="js/app.js"></script>
 
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4VQB1Ok9qXO6yhZ5RC6SRPdmMp24FkEY&v=3&callback=mapReady">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4VQB1Ok9qXO6yhZ5RC6SRPdmMp24FkEY&v=3&callback=mapReady" onerror="gmapsError()">
     </script>
-
-    <!-- templates -->
-
-    <script type="text/html" id="info-window-template">
-      <div id="partner-info-window" class="video-container" data-bind="style: { width: containerWidth() + 'px' } " >
-        <div class="iw-header" data-bind="style: { width: videoWidth() + 'px' }, ">
-          <div class="iw-title" data-bind="click: showDetails">
-            <h4 data-bind="text: currentLocation().title"></h4>
-            <i data-bind="css: detailsCaret" aria-hidden="true"></i>
-          </div>
-          <div class="iw-details" data-bind="visible: shouldShowDetails, css: detailsAmt, with: currentLocation ">
-            <h5 class="iw-city" data-bind="text: city"></h5>
-            <h5 class="iw-country" data-bind="text: country"></h5>
-            <p data-bind="text: description, css: $root.descriptionAmt"></p>
-            <a class="iw-see-more-btn" data-bind="click: $root.toggleFullText" href="">
-              <small data-bind="text: $root.shouldShowFullDetails() ? 'See Less...' : 'See More...'"></small>
-            </a>
-          </div>
-        </div>
-        <div id="embeded-video" class="video" data-bind="style: { width: videoWidth() + 'px' }, html: embeddedVideo"></div>
-        <div class="thumbs" data-bind="style: { width: videoWidth() + 'px' }, foreach: videoThumbs">
-          <img class="thumb" data-bind="style: { width: $root.thumbWidth() + 'px', height: $root.thumbHeight() + 'px' }, click: $root.fetchVideo, attr: { src: url }" src="">
-        </div>
-      </div>
-    </script>
-    <script type="text/html" id="embed-video-error">
-      <h1>There was a problem getting data from Vimeo</h1>
-    </script>
-
   </body>
 </html>

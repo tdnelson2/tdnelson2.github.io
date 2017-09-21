@@ -79,17 +79,19 @@
             self.currentLocation(location);
             var thisMarker = self.markers[self.indexOfCurrentLocation()];
             MarkerStylers.bounce(thisMarker, self.markers);
-                                    //    map, infoWindow, marker, markers, index, currentLocationKO, mapIsFullScreenKO
             InfoWindow.populateInfoWindow(self.map, self.infoWindow,
                                           thisMarker, self.markers,
                                           self.indexOfCurrentLocation(),
                                           self.currentLocation,
                                           self.mapShouldBeFullScreen);
+            Map.repositionForInfoWindow(self.map, 
+                                        self.markers[self.indexOfCurrentLocation()], 
+                                        self.mobileMode);
         };
 
         // Show/hide sidebar.
         self.toggleSidebar = function() {
-            self.shouldShowSidebar(self.shouldShowSidebar() ? false : true);
+            self.shouldShowSidebar(!self.shouldShowSidebar());
             self.mapShouldBeFullScreen(self.mapShouldBeFullScreen() ? false : true);
             google.maps.event.trigger(self.map, "resize");
 
@@ -126,20 +128,20 @@
 
         // Recieves notification from when Google Maps is ready to load.
         notifier.subscribe(function() {
-            self.map = Map.initMap();
+            self.map = Map.initMap(self.mobileMode);
             self.mapBounds = new google.maps.LatLngBounds();
             self.infoWindow = new google.maps.InfoWindow();
             MarkerStylers.init();
             for (var i = 0; i < self.locationList().length; i++) {
-                                    // map, markers,
-                                    // infoWindow, locationIndex,
-                                    // locationListKO, currentLocationKO,
-                                    // mapIsFullScreenKO
                 Marker.buildMarker(self.map, self.mapBounds, self.markers, self.infoWindow,
                                    i, self.locationList, self.currentLocation,
-                                   self.mapShouldBeFullScreen);
+                                   self.mapShouldBeFullScreen, self.mobileMode);
             }
-            self.centerAndZoom();
+
+            // Keep markers on screen if user resizes the window.
+            google.maps.event.addDomListener(window, 'resize', function() {
+              self.map.fitBounds(self.mapBounds);
+            });
         }, self, "mapReadyForInit");
 
         // Recieve notification if there is no response from Google Maps.

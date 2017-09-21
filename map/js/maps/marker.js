@@ -2,7 +2,7 @@ Marker = {
   buildMarker: function(map, mapBounds, markers,
                         infoWindow, locationIndex,
                         locationListKO, currentLocationKO,
-                        mapIsFullScreenKO) {
+                        mapIsFullScreenKO, isMobile) {
     var location = locationListKO()[locationIndex];
     var marker = new google.maps.Marker({
       position: location.coordinates,
@@ -24,6 +24,10 @@ Marker = {
       };
     })(map, infoWindow, marker, markers, locationIndex, 
        locationListKO, currentLocationKO, mapIsFullScreenKO));
+
+    marker.addListener('click', function() {
+      Map.repositionForInfoWindow(map, marker, isMobile);
+    });
 
     markers.push(marker);
     mapBounds.extend(marker.position);

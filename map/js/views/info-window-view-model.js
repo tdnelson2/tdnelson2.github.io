@@ -1,16 +1,97 @@
 var InfoWindow = {
+
+  width: null,
+  height: null,
+  currentLocation: null,
+  map: null,
+  infoWindow: null,
+  marker: null,
+  markerIndex: null,
+  mapIsFullScreenKO: null,
+  vimeoURL: "https://api.vimeo.com/users/lahash/videos",
+  vimeoToken: "56cf73847a95b1e6fef352aedc5bb1d5",
+  vimeoErrMsg: '<h1 style="color: red;">There was a problem getting data from Vimeo</h1>',
+  vimeoOembedURL: "https://vimeo.com/api/oembed.json",
+
+  // A function for calculating the width of 
+  // the thumbnails which appear below the video
+  // so that they fit flush with the video.
+  getThumbWidth: function() {
+    var numberOfThumbs = this.width < 500 ? 3 : 6;
+    var exactWidth = this.width/numberOfThumbs;
+    return exactWidth-4;
+  },
+
   populateInfoWindow: function(map, infoWindow,
                                marker, markers,
                                index, currentLocationKO,
                                mapIsFullScreenKO) {
-    // Check to make sure the infowWindow is not already opened on this marker.
+
+
+    this.currentLocation = Model.Locations[index];
+    this.map = map;
+    this.infoWindow = infoWindow;
+    this.marker = marker,
+    this.markerIndex = index;
+    this.mapIsFullScreenKO = mapIsFullScreenKO;
+
+    // DETERMINE INFOWINDOW/VIDEO/THUMB SIZES
+
+    // Determine what the video size should be.
+    // If the sidebar is open, we need to deduct
+    // that from our calculations
+    var sidebarWidth = mapIsFullScreenKO() ? 0 : 300;
+    var mapWidth = $( window ).width()-sidebarWidth;
+
+    // If the screen size is greater than 900px,
+    // we'll make the video dimensions 640x360.
+    // But if it is lower than 900px,
+    // we'll make the dimensions 70% of the screen width
+    InfoWindow.width = mapWidth > 900 ? 640 : 
+                                       Math.floor(mapWidth*0.6);
+    InfoWindow.height = mapWidth > 900 ? 360 : 
+                                        Math.floor(this.width*9/16);
+
+    var containerWidth = Math.floor(InfoWindow.width*1.05);
+    var videoWidth = InfoWindow.width;
+
+    // Determine optimal thumb size
+    var thumbWidth = InfoWindow.getThumbWidth();
+
+    var thumbHeight = thumbWidth*(9/16);
+
+    // Populate HTML.
+    var infoWindowHTML = ''+
+    '<div id="partner-info-window" class="video-container" style="width: '+containerWidth+'px;" } " >'+
+      '<div class="iw-header" style="width: '+videoWidth+'px;">'+
+        '<div class="iw-title" data-bind="click: showDetails">'+
+          '<h4>'+this.currentLocation.title+'</h4>'+
+          '<i data-bind="css: detailsCaret" aria-hidden="true"></i>'+
+        '</div>'+
+        '<div class="iw-details" data-bind="visible: shouldShowDetails, css: detailsAmt ">'+
+          '<h5 class="iw-city">'+this.currentLocation.city+'</h5>'+
+          '<h5 class="iw-country">'+this.currentLocation.country+'</h5>'+
+          '<p data-bind="css: $root.descriptionAmt">'+this.currentLocation.description+'</p>'+
+          '<a class="iw-see-more-btn" data-bind="click: toggleFullText" href="">'+
+            '<small data-bind="text: shouldShowFullDetails() ? \'See Less...\' : \'See More...\'"></small>'+
+          '</a>'+
+        '</div>'+
+      '</div>'+
+      '<div id="embeded-video" class="video" data-bind="html: embeddedVideo" style="width: '+videoWidth+'px;"></div>'+
+      '<div class="thumbs" data-bind="foreach: videoThumbs" style="width: '+videoWidth+'px;">'+
+        '<img class="thumb" data-bind="click: $root.fetchVideo, attr: { src: url }" style="width: '+thumbWidth+'px; height: '+thumbHeight+'px;">'+
+      '</div>'+
+    '</div>';
+
+    // Open the infoWindow. We can only apply KO bindings
+    // once the HTML has been added to the DOM.
     infoWindow.marker = marker;
-    var infoWindowHTML = document.getElementById("info-window-template").innerHTML;
     infoWindow.setContent(infoWindowHTML);
     infoWindow.open(map, marker);
+
+
     ko.applyBindings(new InfoWindow.ViewModel(map, infoWindow, marker, 
-                                              index, mapIsFullScreenKO),
-               document.getElementById('partner-info-window'));
+                     index, mapIsFullScreenKO), document.getElementById('partner-info-window'));
 
     // Make sure the marker property is cleared if the infoWindow is closed.
     infoWindow.addListener('closeclick', function(){
@@ -21,19 +102,11 @@ var InfoWindow = {
     });
   },
 
-  /////////*****************/////////
-  /////////* VIDEO CONTENT */////////
-  /////////*****************/////////
-
-  width: null,
-  height: null,
-
-  ViewModel: function(map, infoWindow, marker, markerIndex, mapIsFullScreenKO) {
+  ViewModel: function() {
     var self = this;
-    self.currentLocation = ko.observable(Model.Locations[markerIndex]);
     self.embeddedVideo = ko.observable('');
     self.videoThumbs = ko.observableArray([]);
-    self.shouldShowDetails = ko.observable(mapIsFullScreenKO());
+    self.shouldShowDetails = ko.observable(InfoWindow.mapIsFullScreenKO());
     self.shouldShowFullDetails = ko.observable(false);
     self.detailsCaret = ko.pureComputed(function() {
         return self.shouldShowDetails() ? "fa fa-caret-down fa-fw" : 
@@ -53,90 +126,39 @@ var InfoWindow = {
 
     self.showDetails = function() {
       self.shouldShowDetails(!self.shouldShowDetails());
-      
-      // Adjust map to fit larger infowindow.
-      infoWindow.open(map, marker);
     };
 
     self.toggleFullText = function() {
       self.shouldShowFullDetails(!self.shouldShowFullDetails());
-
-      // Adjust map to fit larger infowindow.
-      infoWindow.open(map, marker);
     };
 
     self.fetchVideo = function(thumb) {
-      InfoWindow.embedVideo(thumb.link, self.embeddedVideo, mapIsFullScreenKO, 
-                            map, marker, infoWindow);
+      InfoWindow.embedVideo(thumb.link, self.embeddedVideo);
     };
 
-    // Determine what the video size should be.
-    // If the sidebar is open, we need to deduct
-    // that from our calculations
-    self.sidebarWidth = mapIsFullScreenKO() ? 0 : 300;
-    self.mapWidth = $( window ).width()-self.sidebarWidth;
-
-    // If the screen size is greater than 900px,
-    // we'll make the video dimensions 640x360.
-    // But if it is lower than 900px,
-    // we'll make the dimensions 70% of the screen width
-    InfoWindow.width = self.mapWidth > 900 ? 640 : 
-                                       Math.floor(self.mapWidth*0.7);
-    InfoWindow.height = self.mapWidth > 900 ? 360 : 
-                                        Math.floor(InfoWindow.width*9/16);
-
-    self.containerWidth = ko.observable(Math.floor(InfoWindow.width*1.05));
-    self.videoWidth = ko.observable(InfoWindow.width);
-    // infoWindow.maxWidth = InfoWindow.width;
-    // infoWindow.setOptions({maxWidth:InfoWindow.width});
-
-    // Determine optimal thumb size
-    self.thumbWidth = ko.pureComputed(function() {
-      var numberOfThumbs = 0.9;
-      var width = 84;
-      var tolerance = InfoWindow.width < 500 ? 0.02 : 0.001;
-      console.log('InfoWindow width: '+InfoWindow.width);
-      console.log('Initial width :'+width);
-      console.log('Tolerance :'+tolerance);
-      while(numberOfThumbs-(Math.floor(numberOfThumbs)) > tolerance) {
-        numberOfThumbs = InfoWindow.width/width;
-        width += 1;
-      }
-      return width-5;
-    });
-
-    self.thumbHeight = ko.pureComputed(function() {
-      return self.thumbWidth()*(9/16);
-    });
-
     // Add links to videos and embed the top result.
-    InfoWindow.render(map,
-                      infoWindow,
-                      marker,
-                      self.currentLocation,
-                      self.videoThumbs,
-                      self.embeddedVideo,
-                      mapIsFullScreenKO);
+    InfoWindow.renderVideoContent(self.videoThumbs, self.embeddedVideo);
   },
+
+  /////////*****************/////////
+  /////////* VIDEO CONTENT */////////
+  /////////*****************/////////
 
     // Render result of video search using an arry of search terms.
-  render: function(map, infoWindow, marker, locationKO, thumbsKO, 
-                   embeddedVideoKO, mapIsFullScreenKO) {
-    var searchTerms = [locationKO().title,
-              locationKO().city,
-              locationKO().country];
+  renderVideoContent: function(thumbsKO, embeddedVideoKO) {
+    var searchTerms = [this.currentLocation.title,
+              this.currentLocation.city,
+              this.currentLocation.country];
 
     // Query Vimeo for videos.
-    this.addFromQuery(map, infoWindow, marker, searchTerms, 
-                      thumbsKO, embeddedVideoKO, mapIsFullScreenKO);
+    this.addFromQuery(searchTerms, thumbsKO, embeddedVideoKO);
   },
 
-  // add results from searching the next item in the searchTerms list
-  addFromQuery: function(map, infoWindow, marker, searchTerms, thumbsKO, 
-                         embeddedVideoKO, mapIsFullScreenKO) {
-    var url = "https://api.vimeo.com/users/lahash/videos";
+  // Add results from searching the next item in the searchTerms list.
+  addFromQuery: function(searchTerms, thumbsKO, embeddedVideoKO) {
+    var url = this.vimeoURL;
     url += '?' + $.param({
-      'access_token': "56cf73847a95b1e6fef352aedc5bb1d5",
+      'access_token': this.vimeoToken,
       'query': searchTerms.splice(0,1)[0]
     });
 
@@ -147,9 +169,10 @@ var InfoWindow = {
       var dataAry = result.data;
       if(dataAry.length > 0) {
         if(embeddedVideoKO() === '') {
-          InfoWindow.embedVideo(dataAry[0].link, embeddedVideoKO, 
-                                mapIsFullScreenKO, map, marker, infoWindow);
+          InfoWindow.embedVideo(dataAry[0].link, embeddedVideoKO);
         }
+
+        // Add thumbs to KO array
         dataAry.map(function(x) {
           var currentThumbs = thumbsKO().map(function(x) { return x.url; });
           var thumbURL = x.pictures.sizes[2].link;
@@ -160,23 +183,17 @@ var InfoWindow = {
         });
       }
       if(searchTerms.length > 0) {
-        InfoWindow.addFromQuery(map,
-                          infoWindow,
-                          marker,
-                          searchTerms,
-                          thumbsKO,
-                          embeddedVideoKO,
-                          mapIsFullScreenKO);
+        // Qurey using the next search term.
+        InfoWindow.addFromQuery(searchTerms, thumbsKO, embeddedVideoKO);
       }
     }).fail(function(err) {
-      embeddedVideoKO(document.getElementById('embed-video-error'));
+      embeddedVideoKO(InfoWindow.vimeoErrMsg);
     });
   },
 
   // Using a link as an input, generate an embedded video.
-  embedVideo: function(link, embeddedVideoKO, mapIsFullScreenKO, map, marker, infoWindow) {
-    var url = "https://vimeo.com/api/oembed.json";
-
+  embedVideo: function(link, embeddedVideoKO) {
+    var url = this.vimeoOembedURL;
     url += '?' + $.param({
       'url': link,
       'height': this.height,
@@ -188,11 +205,8 @@ var InfoWindow = {
       method: 'GET',
     }).done(function(result) {
       embeddedVideoKO(result.html);
-
-      // Adjust map to fit infowindow on screen.
-      infoWindow.open(map, marker);
     }).fail(function(err) {
-      embeddedVideoKO(document.getElementById('embed-video-error'));
+      embeddedVideoKO(InfoWindow.vimeoErrMsg);
     });
   }
 };

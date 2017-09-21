@@ -9,15 +9,10 @@ function mapReady() {
 	notifier.notifySubscribers("map is ready", "mapReadyForInit");
 }
 
-
-// This is called if Google Maps request times out.
-setTimeout(function() {
-	try {
-		if(!google || !google.maps) {}
-	} catch(err) {
-		notifier.notifySubscribers("map timmed out", "mapTimout");
-	}
-}, 8000);
+function gmapsError() {
+	console.log('Google Maps failed to load.');
+	alert('Google Maps failed to laod for unknown reasons');
+}
 
 
 /////////* LOAD VIEW MODEL */////////
