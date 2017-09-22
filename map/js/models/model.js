@@ -9,7 +9,8 @@ var Model = {
 			coordinates: {
 				lat: -1.953768,
 				lng: 30.096305
-			}
+			},
+			searchTerms: ['Rwanda']
 		}, {
 			title: 'Kampala House',
 			city: 'Kampala',
@@ -18,7 +19,8 @@ var Model = {
 			coordinates: {
 				lat: 0.311491,
 				lng: 32.574313
-			}
+			},
+			searchTerms: ['Kampala']
 		}, {
 			title: 'Grace & Healing Ministry',
 			city: 'Dodoma',
@@ -27,7 +29,8 @@ var Model = {
 			coordinates: {
 				lat: -6.158543,
 				lng: 35.744421
-			}
+			},
+			searchTerms: ['Grace & Healing Ministry', 'Dodoma']
 		}, {
 			title: 'Nipe Tumaini',
 			city: 'Nairobi',
@@ -36,7 +39,8 @@ var Model = {
 			coordinates: {
 				lat: -1.285289,
 				lng: 36.579728
-			}
+			},
+			searchTerms: ['Nipe Tumaini']
 		}, {
 			title: 'Path of Hope',
 			city: 'Shinyanga',
@@ -45,7 +49,8 @@ var Model = {
 			coordinates: {
 				lat: -3.671110,
 				lng: 33.424168
-			}
+			},
+			searchTerms: ['Path of Hope', 'Shinyanga']
 		}
 	],
 
@@ -56,6 +61,6 @@ var Model = {
 		this.description = data.description;
 		this.coordinates = data.coordinates;
 		this.hide = ko.observable(false);
-		this.marker = null;
+		this.searchTerms = data.searchTerms;
 	}
 };

@@ -146,11 +146,9 @@ var InfoWindow = {
 
     // Render result of video search using an arry of search terms.
   renderVideoContent: function(thumbsKO, embeddedVideoKO) {
-    var searchTerms = [this.currentLocation.title,
-              this.currentLocation.city,
-              this.currentLocation.country];
 
     // Query Vimeo for videos.
+    var searchTerms = this.currentLocation.searchTerms.slice();
     this.addFromQuery(searchTerms, thumbsKO, embeddedVideoKO);
   },
 
