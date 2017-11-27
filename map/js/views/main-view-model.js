@@ -84,7 +84,7 @@
                                           self.indexOfCurrentLocation(),
                                           self.currentLocation,
                                           self.mapShouldBeFullScreen);
-            Map.repositionForInfoWindow(self.map, 
+            MyMap.repositionForInfoWindow(self.map, 
                                         self.markers[self.indexOfCurrentLocation()], 
                                         self.mobileMode);
         };
@@ -128,7 +128,7 @@
 
         // Recieves notification from when Google Maps is ready to load.
         notifier.subscribe(function() {
-            self.map = Map.initMap(self.mobileMode);
+            self.map = MyMap.initMap(self.mobileMode);
             self.mapBounds = new google.maps.LatLngBounds();
             self.infoWindow = new google.maps.InfoWindow();
             MarkerStylers.init();

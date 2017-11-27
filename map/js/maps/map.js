@@ -1,12 +1,12 @@
 
-Map = {
+var MyMap = {
 
   mapCenter: { lat: -1.193195, lng: 32.662820 },
 
   initMap: function(isMobileDevice) {
 
     // build map
-    var map = new google.maps.Map(document.getElementById('map'), {
+    var thisMap = new google.maps.Map(document.getElementById('map'), {
       center: this.mapCenter,
       styles: MapStyles.styles,
       zoom: isMobileDevice ? 5 : 6,
@@ -14,8 +14,7 @@ Map = {
       mapTypeControl: false,
       fullscreenControl: false
     });
-    // map.fitBounds();
-    return map;
+    return thisMap;
   },
 
   repositionForInfoWindow: function(map, marker, isMobile) {
